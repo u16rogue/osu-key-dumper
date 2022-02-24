@@ -161,7 +161,7 @@ auto main() -> int
     // Allocate buffer
     auto buffer = std::make_unique<std::uint8_t[]>(buffer_size);
 
-    // Load readable memory into memory
+    // Load readable memory into buffer
     printf("\n");
     auto current_buffer = buffer.get();
     std::size_t total_bytes_read {0 };
@@ -170,7 +170,7 @@ auto main() -> int
         printf("\n[+] Reading to buffer @ 0x%p (%lu bytes)", adr, size);
         if (!ReadProcessMemory(osu_proc, LPCVOID(adr), current_buffer, size, nullptr))
         {
-            printf("\n[!] Invalid memory read @ 0x%p who cares anyway", adr);
+            printf("\n[!] Invalid memory read @ 0x%p! Ignoring", adr);
             continue;
         }
 
@@ -182,8 +182,8 @@ auto main() -> int
 
     // Look for version
     printf("\n[+] Looking for version");
-    const wchar_t * osu_ver_pattern = L"https://osu.ppy.sh/home/changelog/";
-    auto link_res = wchar_search(osu_ver_pattern, buffer.get(), total_bytes_read);
+    #define _OSU_VER_PATTERN L"https://osu.ppy.sh/home/changelog/"
+    auto link_res = wchar_search(_OSU_VER_PATTERN, buffer.get(), total_bytes_read);
     if (!link_res)
     {
         printf("\n[!] No version reference found!"
@@ -194,12 +194,13 @@ auto main() -> int
     // Parse for version
     printf("\n[+] Parsing version");
     wchar_t version[64] {};
-    link_res += 34;
+    link_res += sizeof(_OSU_VER_PATTERN) / 2 - 1;
     for (auto p_ver = version; *link_res != 0 && *link_res != '.'; ++p_ver, ++link_res)
     {
         *p_ver = *link_res;
     }
     wprintf(L" -> %s", version);
+    #undef _OSU_VER_PATTERN
 
     // Look for the key
     printf("\n[+] Looking for key");
