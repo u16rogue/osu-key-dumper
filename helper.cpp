@@ -27,7 +27,7 @@ auto whandle::close() const noexcept -> void
 
 whandle::operator bool() const noexcept
 {
-    return this->h != nullptr;
+    return this->h != nullptr && this->h != INVALID_HANDLE_VALUE;
 }
 
 whandle::operator HANDLE() const noexcept
