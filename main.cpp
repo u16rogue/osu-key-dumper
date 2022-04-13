@@ -195,7 +195,7 @@ auto main() -> int
     printf("\n[+] Parsing version");
     wchar_t version[64] {};
     link_res += sizeof(_OSU_VER_PATTERN) / 2 - 1;
-    for (auto p_ver = version; *link_res != 0 && *link_res != '.'; ++p_ver, ++link_res)
+    for (auto p_ver = version; *link_res != 0 && *link_res != '.' && *link_res != '-'; ++p_ver, ++link_res)
     {
         *p_ver = *link_res;
     }
