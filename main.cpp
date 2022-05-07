@@ -10,7 +10,7 @@
 auto find_osu(DWORD & outpid) -> bool
 {
     whandle psnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
-    PROCESSENTRY32 pe { .dwSize { sizeof(pe) } };
+    PROCESSENTRY32 pe { .dwSize = sizeof(pe) };
     if (Process32First(psnap, &pe))
     {
         do
@@ -40,7 +40,7 @@ auto thread_cont(DWORD proc_id, THREAD_DO tdo) -> void
     if (!tsnap)
         return;
 
-    THREADENTRY32 te { .dwSize { sizeof(te) } };
+    THREADENTRY32 te { .dwSize = sizeof(te) };
     if (Thread32First(tsnap, &te))
     {
         do
@@ -195,7 +195,7 @@ auto main() -> int
     printf("\n[+] Parsing version");
     wchar_t version[64] {};
     link_res += sizeof(_OSU_VER_PATTERN) / 2 - 1;
-    for (auto p_ver = version; *link_res != 0 && *link_res != '.' && *link_res != '-'; ++p_ver, ++link_res)
+    for (auto p_ver = version; *link_res != 0 && *link_res != '.' && *link_res != '-' && *link_res != '"'; ++p_ver, ++link_res)
     {
         *p_ver = *link_res;
     }
@@ -229,7 +229,7 @@ auto main() -> int
     printf("\n[+] Parsing key");
     while (*key_loc--);
     key_loc += 2;
-    for (auto p_key = key; *key_loc != 0 && *key_loc != '-'; ++p_key, ++key_loc)
+    for (auto p_key = key; *key_loc != 0; ++p_key, ++key_loc)
     {
         *p_key = *key_loc;
     }
